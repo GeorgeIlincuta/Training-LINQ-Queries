@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HtmlAgilityPack;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -142,6 +143,23 @@ namespace ConsoleApp1
             }
             // 6. Create a list of Boulevards in Paris that contain 'de' anywhere in the name
             // https://en.wikipedia.org/wiki/Category:Boulevards_in_Paris
+            Console.WriteLine("////// Scraping and Filtering Strings with 'de' ///////");
+            var itemSelected = new List<string>();
+            var stringToCheck = "de";
+            var url = "https://en.wikipedia.org/wiki/Category:Boulevards_in_Paris";
+            var web = new HtmlWeb();
+            var doc = web.Load(url);
+            HtmlNodeCollection parentSelectors = doc.DocumentNode.SelectNodes("//*[@class='mw-category-group']/ul/li/a/text()");
+            foreach (var item in parentSelectors)
+            {
+                var selectors = item.InnerText;
+                itemSelected.Add(selectors);
+            }
+            var filteredItems = itemSelected.Where( x => x.Contains(stringToCheck));
+            foreach (var item in filteredItems)
+            {
+                Console.WriteLine(item);
+            }
             // 7. Sort the people alphabetically by last name
             var lastNameAlphabetically = inventors.OrderBy(x => x.last)
                                                   .Select( x => x.last);
@@ -168,7 +186,7 @@ namespace ConsoleApp1
     {
         public string first;
         public string last;
-        public int year;
-        public int passed;
+        public int    year;
+        public int    passed;
     }
 }
